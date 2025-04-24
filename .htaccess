@@ -1,0 +1,60 @@
+# تفعيل محرك إعادة الكتابة
+RewriteEngine On
+
+# تعيين المجلد الأساسي
+RewriteBase /
+
+# إعادة توجيه الطلبات إلى HTTPS (قم بإزالة التعليق إذا كان لديك شهادة SSL)
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# إعادة كتابة الروابط الصديقة للمستخدم
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^/]+)/?$ index.php?page=$1 [QSA,L]
+RewriteRule ^([^/]+)/([^/]+)/?$ index.php?page=$1&id=$2 [QSA,L]
+
+# منع الوصول إلى ملفات معينة
+<FilesMatch "^(config\.php|database\.sql)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# منع عرض محتويات المجلدات
+Options -Indexes
+
+# تعيين الصفحة الافتراضية
+DirectoryIndex index.php index.html
+
+# ضغط الملفات لتحسين الأداء
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/x-javascript application/json
+</IfModule>
+
+# تعيين التخزين المؤقت للمتصفح
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType application/x-javascript "access plus 1 month"
+    ExpiresByType image/x-icon "access plus 1 year"
+    ExpiresDefault "access plus 2 days"
+</IfModule>
+
+# تعيين الحد الأقصى لحجم الملفات المرفوعة
+php_value upload_max_filesize 10M
+php_value post_max_size 10M
+php_value max_execution_time 300
+php_value max_input_time 300
+
+# تعيين منطقة التوقيت
+php_value date.timezone "Asia/Riyadh"
+
+# تعيين ترميز الصفحات
+AddDefaultCharset UTF-8
